@@ -14,7 +14,7 @@ import shutil
 import sys
 import unicodedata
 import zipfile
-from defusedxml import ElementTree
+from defusedxml.ElementTree import ParseError, fromstring
 
 
 TEXT_NS = "urn:oasis:names:tc:opendocument:xmlns:text:1.0"
@@ -165,8 +165,8 @@ def read_odt_text(path):
         raise ConversionError("ODT invalide : archive zip corrompue.")
 
     try:
-        root = ElementTree.fromstring(content)  # nosec B314 - defusedxml.ElementTree is used
-    except ElementTree.ParseError as exc:
+        root = fromstring(content)
+    except ParseError as exc:
         raise ConversionError("ODT invalide : content.xml est mal forme (%s)." % exc)
 
     body = root.find(".//{%s}body/{%s}text" % (OFFICE_NS, OFFICE_NS))
