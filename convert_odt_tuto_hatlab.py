@@ -165,7 +165,7 @@ def read_odt_text(path):
         raise ConversionError("ODT invalide : archive zip corrompue.")
 
     try:
-        root = ElementTree.fromstring(content)
+        root = ElementTree.fromstring(content)  # nosec B314 - defusedxml.ElementTree is used
     except ElementTree.ParseError as exc:
         raise ConversionError("ODT invalide : content.xml est mal forme (%s)." % exc)
 
