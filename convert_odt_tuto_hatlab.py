@@ -151,7 +151,9 @@ def read_odt_text(path):
     if not os.path.exists(path):
         raise ConversionError("Fichier introuvable : %s" % path)
     if not zipfile.is_zipfile(path):
-        raise ConversionError("Le fichier n'est pas un ODT valide ou lisible : %s" % path)
+        raise ConversionError(
+            "Le fichier n'est pas un ODT valide ou lisible : %s" % path
+        )
 
     try:
         with zipfile.ZipFile(path) as archive:
@@ -169,7 +171,9 @@ def read_odt_text(path):
 
     body = root.find(".//{%s}body/{%s}text" % (OFFICE_NS, OFFICE_NS))
     if body is None:
-        raise ConversionError("ODT invalide : impossible de trouver office:body/office:text.")
+        raise ConversionError(
+            "ODT invalide : impossible de trouver office:body/office:text."
+        )
 
     return _extract_blocks(body)
 
@@ -293,7 +297,13 @@ def parse_tutorial(lines):
         metadata_open = False
         if current_section == "step" and current_step is not None:
             current_step["lines"].append(line)
-        elif current_section in ("summary", "introduction", "materials", "tools", "notes"):
+        elif current_section in (
+            "summary",
+            "introduction",
+            "materials",
+            "tools",
+            "notes",
+        ):
             data[current_section].append(line)
         else:
             data["warnings"].append("Ligne ignoree hors section : %s" % line)
@@ -382,7 +392,9 @@ def render_dokuwiki(data, media_namespace):
     output.append("")
     output.append("^ Champ ^ Valeur ^")
     output.append("| Auteur | %s |" % _escape_table_cell(data.get("author", "")))
-    output.append("| Catégories | %s |" % _escape_table_cell(data.get("categories", [])))
+    output.append(
+        "| Catégories | %s |" % _escape_table_cell(data.get("categories", []))
+    )
     output.append("")
 
     if data.get("summary"):
@@ -447,7 +459,9 @@ def extract_odt_images(path, target_dir, page_id=None):
     if not os.path.exists(path):
         raise ConversionError("Fichier introuvable : %s" % path)
     if not zipfile.is_zipfile(path):
-        raise ConversionError("Le fichier n'est pas un ODT valide ou lisible : %s" % path)
+        raise ConversionError(
+            "Le fichier n'est pas un ODT valide ou lisible : %s" % path
+        )
 
     prefix = normalize_page_id(page_id)
     extracted = []
@@ -566,7 +580,9 @@ def build_parser():
         )
     )
     parser.add_argument("input_odt", nargs="?", help="Chemin du fichier .odt source.")
-    parser.add_argument("output_txt", nargs="?", help="Chemin du fichier .txt DokuWiki a generer.")
+    parser.add_argument(
+        "output_txt", nargs="?", help="Chemin du fichier .txt DokuWiki a generer."
+    )
     parser.add_argument(
         "--media-namespace",
         default="projets:divers",

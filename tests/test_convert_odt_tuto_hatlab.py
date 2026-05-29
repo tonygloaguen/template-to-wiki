@@ -74,7 +74,9 @@ class ConvertOdtTutoHatlabTests(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
         self.assertIn("<WRAP group>", rendered)
-        self.assertIn("{{projets:divers:iso_linux.png|Télécharger l'image ISO}}", rendered)
+        self.assertIn(
+            "{{projets:divers:iso_linux.png|Télécharger l'image ISO}}", rendered
+        )
         self.assertIn("==== Etape n°1 - Télécharger l'image ISO ====", rendered)
 
     def test_read_odt_text_preserves_simple_lists(self):
@@ -148,7 +150,6 @@ class ConvertOdtTutoHatlabTests(unittest.TestCase):
         self.assertIn("<WRAP half column>", content)
         self.assertIn("{{projets:divers:iso_linux.png|", content)
         self.assertIn("==== Etape n°1 - Télécharger l’image ISO Linux ====", content)
-
 
 
 if __name__ == "__main__":

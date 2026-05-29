@@ -62,7 +62,8 @@ def paragraph(text):
 
 def build_content_xml():
     body = "\n".join(paragraph(line) for line in LINES)
-    return """<?xml version="1.0" encoding="UTF-8"?>
+    return (
+        """<?xml version="1.0" encoding="UTF-8"?>
 <office:document-content
   xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
   xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0">
@@ -72,7 +73,9 @@ def build_content_xml():
     </office:text>
   </office:body>
 </office:document-content>
-""" % body
+"""
+        % body
+    )
 
 
 STYLES_XML = """<?xml version="1.0" encoding="UTF-8"?>
@@ -114,10 +117,14 @@ def create_odt(output_path=OUTPUT_PATH):
             "application/vnd.oasis.opendocument.text",
             compress_type=zipfile.ZIP_STORED,
         )
-        archive.writestr("content.xml", build_content_xml(), compress_type=zipfile.ZIP_DEFLATED)
+        archive.writestr(
+            "content.xml", build_content_xml(), compress_type=zipfile.ZIP_DEFLATED
+        )
         archive.writestr("styles.xml", STYLES_XML, compress_type=zipfile.ZIP_DEFLATED)
         archive.writestr("meta.xml", META_XML, compress_type=zipfile.ZIP_DEFLATED)
-        archive.writestr("META-INF/manifest.xml", MANIFEST_XML, compress_type=zipfile.ZIP_DEFLATED)
+        archive.writestr(
+            "META-INF/manifest.xml", MANIFEST_XML, compress_type=zipfile.ZIP_DEFLATED
+        )
     return output_path
 
 
