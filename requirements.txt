@@ -1,0 +1,2 @@
+# No external Python dependency required.
+# Tkinter is a system package on Linux. On Ubuntu/Debian: sudo apt install python3-tk

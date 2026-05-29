@@ -1,0 +1,114 @@
+name: CI — Hatlab ODT Converter
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  python-checks:
+    name: Python checks — tests and conversion
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+
+      - name: Compile Python files
+        run: |
+          python -m py_compile \
+            convert_odt_tuto_hatlab.py \
+            hatlab_odt_converter_gui.py \
+            tools/create_example_odt.py
+
+      - name: Run unit tests
+        run: |
+          python -m unittest discover -s tests
+
+      - name: Run converter self-test
+        run: |
+          python convert_odt_tuto_hatlab.py --self-test
+
+      - name: Regenerate example ODT
+        run: |
+          python tools/create_example_odt.py
+
+      - name: Convert example ODT
+        run: |
+          python convert_odt_tuto_hatlab.py \
+            examples/install_party_linux_example.odt \
+            sortie_test.txt \
+            --media-namespace projets:divers \
+            --force
+
+      - name: Validate generated DokuWiki output
+        run: |
+          test -f sortie_test.txt
+
+          grep -q "Install-party Linux" sortie_test.txt
+          grep -q "<WRAP group>" sortie_test.txt
+          grep -q "<WRAP half column>" sortie_test.txt
+          grep -q "{{projets:divers:iso_linux.png|" sortie_test.txt
+          grep -q "==== Etape n°1 - Télécharger l’image ISO Linux ====" sortie_test.txt
+
+      - name: Upload generated DokuWiki example
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: generated-dokuwiki-example
+          path: sortie_test.txt
+          retention-days: 14
+
+  lint-security:
+    name: Lint and security — optional
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install lint tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff bandit
+
+      - name: Ruff check
+        run: |
+          ruff check .
+
+      - name: Ruff format check
+        run: |
+          ruff format --check .
+
+      - name: Bandit security scan
+        run: |
+          bandit -r . \
+            --exclude ./.venv,./tests \
+            --severity-level medium \
+            --confidence-level medium

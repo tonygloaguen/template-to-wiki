@@ -1,0 +1,57 @@
+# Python bytecode / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python packaging / build
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test / coverage
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local generated outputs
+sortie_test.txt
+sortie_gui_test.txt
+*.tmp
+*.bak
+*.bak_*
+media_test/
+
+# Hatlab converter generated outputs
+*_converti.txt
+*_generated.txt
+generated_*.txt
+
+# Codeburn / local AI tooling traces
+codeburn-*.json
+CODEBURN-*.json
+*codeburn*.json
+*CODEBURN*.json
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# LibreOffice temporary lock files
+.~lock.*#
+
+# Logs
+*.log
