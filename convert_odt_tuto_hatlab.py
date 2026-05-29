@@ -14,7 +14,7 @@ import shutil
 import sys
 import unicodedata
 import zipfile
-from xml.etree import ElementTree
+from defusedxml import ElementTree
 
 
 TEXT_NS = "urn:oasis:names:tc:opendocument:xmlns:text:1.0"
